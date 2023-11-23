@@ -32,6 +32,22 @@
 		<module>ewm-service</module>
 		<module>stats</module>
 	</modules>
+	<dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+	</dependencies>
+</dependencyManagement>
 
 	<build>
 		<pluginManagement>
