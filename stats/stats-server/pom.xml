@@ -77,18 +77,13 @@
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
-    </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <optional>true</optional>
-                <version>${lombok.version}</version>
-            </dependency>
 
-        </dependencies>
-    </dependencyManagement>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
