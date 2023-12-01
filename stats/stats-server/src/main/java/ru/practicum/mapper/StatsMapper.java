@@ -1,12 +1,22 @@
 package ru.practicum.mapper;
 
-import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 import ru.practicum.EndpointHitDto;
 import ru.practicum.model.Stats;
 
-@Mapper(componentModel = "spring")
-public interface StatsMapper {
-    Stats toStats(EndpointHitDto endpointHitDto);
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-    EndpointHitDto toEndpointHitDto(Stats stats);
+@Component
+public class StatsMapper {
+    public static final String DATA_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    public Stats toStats(EndpointHitDto endpointHitDto) {
+        return new Stats()
+                .setApp(endpointHitDto.getApp())
+                .setId(endpointHitDto.getId())
+                .setIp(endpointHitDto.getIp())
+                .setTimestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
+                .setUri(endpointHitDto.getUri());
+    }
 }
