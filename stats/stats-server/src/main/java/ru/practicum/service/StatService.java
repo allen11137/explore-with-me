@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 
-import static ru.practicum.dto.EndpointHitDto.DATA_TIME_PATTERN;
+import static ru.practicum.controller.StatController.DATA_TIME_PATTERN;
 
 @Service
 @RequiredArgsConstructor

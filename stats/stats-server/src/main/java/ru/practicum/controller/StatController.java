@@ -12,11 +12,10 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-import static ru.practicum.dto.EndpointHitDto.DATA_TIME_PATTERN;
-
 @RestController
 @RequiredArgsConstructor
 public class StatController {
+    public static final String DATA_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private final StatService statService;
 
     @ResponseStatus(HttpStatus.CREATED)
