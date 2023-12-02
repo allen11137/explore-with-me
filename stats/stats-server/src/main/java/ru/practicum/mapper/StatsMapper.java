@@ -23,7 +23,6 @@ public class StatsMapper {
     public static Stats toStats(EndpointHitDto endpointHitDto) {
         return new Stats()
                 .setApp(endpointHitDto.getApp())
-                .setId(endpointHitDto.getId())
                 .setIp(endpointHitDto.getIp())
                 .setTimestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
                 .setUri(endpointHitDto.getUri());
