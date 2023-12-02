@@ -18,10 +18,9 @@ import static ru.practicum.dto.EndpointHitDto.DATA_TIME_PATTERN;
 @RequiredArgsConstructor
 public class StatService {
     private final StatRepository statRepository;
-    private final StatsMapper statsMapper;
 
     public EndpointHitDto createStatHit(EndpointHitDto endpointHitDto) {
-        return StatsMapper.toEndpointHitDto(statRepository.save(statsMapper.toStats(endpointHitDto)));
+        return StatsMapper.toEndpointHitDto(statRepository.save(StatsMapper.toStats(endpointHitDto)));
     }
 
     public List<StatsView> getStatHit(LocalDateTime start, LocalDateTime end, Collection<String> uris, boolean isUnique) {
