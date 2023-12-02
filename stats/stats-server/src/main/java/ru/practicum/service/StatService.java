@@ -3,14 +3,16 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.EndpointHitDto;
-import ru.practicum.StatsDto;
 import ru.practicum.mapper.StatsMapper;
 import ru.practicum.model.Stats;
 import ru.practicum.repository.StatRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
+
+import static ru.practicum.EndpointHitDto.DATA_TIME_PATTERN;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +24,24 @@ public class StatService {
         return statRepository.save(statsMapper.toStats(endpointHitDto));
     }
 
-    public List<StatsDto> getStatHit(LocalDateTime start, LocalDateTime end, Collection<String> uris, boolean isUnique) {
-        if (uris != null && !uris.isEmpty()) {
-            if (isUnique) {
-                return statRepository.getUniqueStatsByUrisAndBetweenStart(start, end, uris);
+    public List<Stats> getStatHit(LocalDateTime start, LocalDateTime end, Collection<String> uris, boolean isUnique) {
+        if (end.isBefore(start)) {
+            throw new IllegalArgumentException(String.format("Time end %s can not be after start %s",
+                    end.format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)),
+                    start.format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN))));
+        }
+
+        if (!isUnique) {
+            if (uris == null) {
+                return statRepository.findAllStats(start, end);
             } else {
-                return statRepository.getStatsByUri(start, end, uris);
+                return statRepository.findStats(start, end, uris);
             }
         } else {
-            if (isUnique) {
-                return statRepository.getUniqueStatsBetweenStartAndEnd(start, end);
+            if (uris == null) {
+                return statRepository.findAllUniqueStats(start, end);
             } else {
-                return statRepository.getStatsBetweenStartAndEnd(start, end);
+                return statRepository.findUniqueStats(start, end, uris);
             }
         }
     }
