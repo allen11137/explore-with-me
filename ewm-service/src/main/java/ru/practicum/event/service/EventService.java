@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.EndpointHitDto;
+import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.StatsDto;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.RepositoryOfCategory;
