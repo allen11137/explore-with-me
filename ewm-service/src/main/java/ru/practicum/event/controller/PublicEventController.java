@@ -1,4 +1,4 @@
-package ru.practicum.controller;
+package ru.practicum.event.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +16,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hibernate.type.descriptor.java.DateTypeDescriptor.DATE_FORMAT;
+import static ru.practicum.event.Constant.DATA_TIME_PATTERN;
 
 
 @Validated
@@ -32,9 +32,9 @@ public class PublicEventController {
                                                                        @RequestParam(required = false) String text,
                                                                        @RequestParam(required = false) List<Long> categories,
                                                                        @RequestParam(required = false) Boolean paid,
-                                                                       @DateTimeFormat(pattern = DATE_FORMAT)
+                                                                       @DateTimeFormat(pattern = DATA_TIME_PATTERN)
                                                                        @RequestParam(required = false) LocalDateTime rangeStart,
-                                                                       @DateTimeFormat(pattern = DATE_FORMAT)
+                                                                       @DateTimeFormat(pattern = DATA_TIME_PATTERN)
                                                                        @RequestParam(required = false) LocalDateTime rangeEnd,
                                                                        @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                                        @RequestParam(required = false) String sort,

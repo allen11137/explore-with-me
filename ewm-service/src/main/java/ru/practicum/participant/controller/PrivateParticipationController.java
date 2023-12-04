@@ -1,4 +1,4 @@
-package ru.practicum.controller;
+package ru.practicum.participant.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,7 @@ public class PrivateParticipationController {
     @PatchMapping("/{requestId}/cancel")
     public ResponseEntity<ParticipantRequestDto> updateRejectedParticipationRequestPrivate(@NotNull @Positive @PathVariable Long userId,
                                                                                            @NotNull @Positive @PathVariable(required = true,
-                                                                                                     name = "requestId") Long requestId) {
+                                                                                                   name = "requestId") Long requestId) {
         return new ResponseEntity<>(participantService.updatePrivateRejectedParticipationRequest(userId, requestId),
                 HttpStatus.OK);
     }

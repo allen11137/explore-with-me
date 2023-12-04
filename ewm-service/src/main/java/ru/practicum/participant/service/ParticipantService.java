@@ -37,10 +37,10 @@ public class ParticipantService {
                 .map(Event::getId)
                 .collect(Collectors.toList());
         if (eventIds.isEmpty()) {
-            return participationRepository.getParticipationRequestsByRequester(userId)
+            return participationRepository.getParticipantRequestsByRequester(userId)
                     .stream().map(MapperOfParticipant::toParticipationRequestDto).collect(Collectors.toList());
         } else {
-            return participationRepository.getParticipationRequestsByRequesterAndEventNotIn(userId, eventIds)
+            return participationRepository.getParticipantRequestsByRequesterAndEventNotIn(userId, eventIds)
                     .stream().map(MapperOfParticipant::toParticipationRequestDto).collect(Collectors.toList());
         }
     }
@@ -48,7 +48,7 @@ public class ParticipantService {
     @Transactional
     public ParticipantRequestDto addPrivateParticipationRequest(Long userId, Long eventId) {
         Event event = eventRepository.getEventsById(eventId);
-        List<Participant> participationRequestList = participationRepository.getParticipationRequestsByRequesterAndEvent(userId, eventId);
+        List<Participant> participationRequestList = participationRepository.getParticipantRequestsByRequesterAndEvent(userId, eventId);
         validatePrivateAddParticipationRequest(event, participationRequestList, userId);
         Participant newParticipationRequest =
                 participationRepository.save(new Participant()
@@ -92,7 +92,7 @@ public class ParticipantService {
     @Transactional
     public ParticipantRequestDto updatePrivateRejectedParticipationRequest(Long userId, Long requestId) {
 
-        Participant participationRequest = participationRepository.getParticipationRequestByIdAndRequester(requestId, userId);
+        Participant participationRequest = participationRepository.getParticipantRequestByIdAndRequester(requestId, userId);
         if (participationRequest == null) {
             throw new NotFoundException("Заявка не найдена.");
         }

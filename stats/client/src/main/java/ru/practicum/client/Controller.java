@@ -18,11 +18,11 @@ public class Controller {
     private final Client client;
 
     @GetMapping("/stats")
-    public ResponseEntity<Object> getAll(HttpServletRequest request,
-                                         @RequestParam(name = "start") String start,
-                                         @RequestParam(name = "end") String end,
-                                         @RequestParam(required = false, name = "uris") String[] uris,
-                                         @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
+    public ResponseEntity<Object> getAllStats(HttpServletRequest request,
+                                              @RequestParam(name = "start") String start,
+                                              @RequestParam(name = "end") String end,
+                                              @RequestParam(required = false, name = "uris") String[] uris,
+                                              @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
         String ipResource = request.getRemoteAddr();
         return client.getStats(ipResource, start, end, uris, unique);
     }

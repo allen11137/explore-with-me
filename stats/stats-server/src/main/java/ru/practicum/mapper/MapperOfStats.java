@@ -7,8 +7,9 @@ import ru.practicum.model.Stats;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+
 @UtilityClass
-public class StatsMapper {
+public class MapperOfStats {
     public static final String DATA_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     public static EndpointHitDto toEndpointHitDto(Stats stats) {
@@ -23,8 +24,8 @@ public class StatsMapper {
     public static Stats toStats(EndpointHitDto endpointHitDto) {
         return new Stats()
                 .setApp(endpointHitDto.getApp())
+                .setUri(endpointHitDto.getUri())
                 .setIp(endpointHitDto.getIp())
-                .setTimestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
-                .setUri(endpointHitDto.getUri());
+                .setTimestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)));
     }
 }

@@ -20,15 +20,15 @@ public class StatController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/hit")
-    public EndpointHitDto saveHit(@RequestBody EndpointHitDto endpointHitDto) {
+    public EndpointHitDto addHit(@RequestBody EndpointHitDto endpointHitDto) {
         return statService.createStatHit(endpointHitDto);
     }
 
     @GetMapping("/stats")
-    public List<StatsView> getStats(@RequestParam @DateTimeFormat(pattern = DATA_TIME_PATTERN) LocalDateTime start,
-                                    @RequestParam @DateTimeFormat(pattern = DATA_TIME_PATTERN) LocalDateTime end,
-                                    @RequestParam(required = false) Collection<String> uris,
-                                    @RequestParam(defaultValue = "false") boolean unique) {
-        return statService.getStatHit(start, end, uris, unique);
+    public List<StatsView> getListOfStats(@RequestParam @DateTimeFormat(pattern = DATA_TIME_PATTERN) LocalDateTime start,
+                                          @RequestParam @DateTimeFormat(pattern = DATA_TIME_PATTERN) LocalDateTime end,
+                                          @RequestParam(required = false) Collection<String> uris,
+                                          @RequestParam(defaultValue = "false") boolean unique) {
+        return statService.getListOfStatHit(start, end, uris, unique);
     }
 }

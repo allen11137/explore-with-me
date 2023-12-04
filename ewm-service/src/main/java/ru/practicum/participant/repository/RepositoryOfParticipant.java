@@ -7,15 +7,15 @@ import java.util.List;
 
 
 public interface RepositoryOfParticipant extends JpaRepository<Participant, Long> {
-    List<Participant> getParticipationRequestByIdIn(List<Long> requestId);
+    List<Participant> getParticipantRequestByIdIn(List<Long> requestId);
 
-    List<Participant> getParticipationRequestsByRequesterAndEvent(Long userId, Long eventId);
+    List<Participant> getParticipantRequestsByRequesterAndEvent(Long userId, Long eventId);
 
-    List<Participant> getParticipationRequestsByRequesterAndEventNotIn(Long userId, List<Long> eventIdList);
+    List<Participant> getParticipantRequestsByRequesterAndEventNotIn(Long userId, List<Long> eventIdList);
 
-    List<Participant> getParticipationRequestsByRequester(Long userId);
+    List<Participant> getParticipantRequestsByRequester(Long userId);
 
-    List<Participant> getParticipationRequestsByEvent(Long eventId);
+    List<Participant> getParticipantRequestsByEvent(Long eventId);
 
-    Participant getParticipationRequestByIdAndRequester(Long requestId, Long userId);
+    Participant getParticipantRequestByIdAndRequester(Long requestId, Long userId);
 }

@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public interface StatRepository extends JpaRepository<Stats, Integer> {
+public interface RepositoryOfStats extends JpaRepository<Stats, Integer> {
 
     @Query(value = "select new ru.practicum.dto.StatsView(s.app, s.uri, cast(count(s.ip) " +
             "AS int) as hits) " +

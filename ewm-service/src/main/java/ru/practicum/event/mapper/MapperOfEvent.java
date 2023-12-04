@@ -13,7 +13,7 @@ import ru.practicum.user.model.User;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.hibernate.type.descriptor.java.DateTypeDescriptor.DATE_FORMAT;
+import static ru.practicum.event.Constant.DATA_TIME_PATTERN;
 
 
 public class MapperOfEvent {
@@ -23,14 +23,14 @@ public class MapperOfEvent {
                 .setAnnotation(event.getAnnotation())
                 .setCategory(MapperOfCategory.toCategoryDto(event.getCategory()))
                 .setConfirmedRequests(event.getConfirmedRequests())
-                .setCreatedOn(event.getCreatedOn().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                .setCreatedOn(event.getCreatedOn().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
                 .setDescription(event.getDescription())
-                .setEventDate(event.getEventDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                .setInitiator(MapperOfUser.toUserShortDto(event.getInitiator()))
+                .setEventDate(event.getEventDate().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
+                .setInitiator(MapperOfUser.toUserBriefDto(event.getInitiator()))
                 .setLocation(MapperOfLocation.toLocationDto(event.getLocation()))
                 .setPaid(event.getPaid())
                 .setParticipantLimit(event.getParticipantLimit())
-                .setPublishedOn(event.getPublishedOn() == null ? null : event.getPublishedOn().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                .setPublishedOn(event.getPublishedOn() == null ? null : event.getPublishedOn().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
                 .setRequestModeration(event.getRequestModeration())
                 .setState(event.getState() == null ? null : event.getState().toString())
                 .setTitle(event.getTitle())
@@ -43,8 +43,8 @@ public class MapperOfEvent {
                 .setAnnotation(event.getAnnotation())
                 .setCategory(MapperOfCategory.toCategoryDto(event.getCategory()))
                 .setConfirmedRequests(event.getConfirmedRequests())
-                .setEventDate(event.getEventDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                .setInitiator(MapperOfUser.toUserShortDto(event.getInitiator()))
+                .setEventDate(event.getEventDate().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
+                .setInitiator(MapperOfUser.toUserBriefDto(event.getInitiator()))
                 .setPaid(event.getPaid())
                 .setTitle(event.getTitle())
                 .setViews(event.getViews());
@@ -56,7 +56,7 @@ public class MapperOfEvent {
                 .setCategory(category)
                 .setCreatedOn(LocalDateTime.now())
                 .setDescription(newEventDto.getDescription())
-                .setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                .setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
                 .setInitiator(initiator)
                 .setLocation(newEventDto.getLocation())
                 .setConfirmedRequests(0L)
@@ -76,7 +76,7 @@ public class MapperOfEvent {
                 .setConfirmedRequests(oldEvent.getConfirmedRequests())
                 .setCreatedOn(oldEvent.getCreatedOn())
                 .setDescription(updateEventAdminRequest.getDescription() == null ? oldEvent.getDescription() : updateEventAdminRequest.getDescription())
-                .setEventDate(updateEventAdminRequest.getEventDate() == null ? oldEvent.getEventDate() : LocalDateTime.parse(updateEventAdminRequest.getEventDate(), DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                .setEventDate(updateEventAdminRequest.getEventDate() == null ? oldEvent.getEventDate() : LocalDateTime.parse(updateEventAdminRequest.getEventDate(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
                 .setInitiator(oldEvent.getInitiator())
                 .setLocation(updateEventAdminRequest.getLocation() == null ? oldEvent.getLocation() : updateEventAdminRequest.getLocation())
                 .setPaid(updateEventAdminRequest.getPaid() == null ? oldEvent.getPaid() : updateEventAdminRequest.getPaid())
@@ -95,7 +95,7 @@ public class MapperOfEvent {
                 .setConfirmedRequests(oldEvent.getConfirmedRequests())
                 .setCreatedOn(oldEvent.getCreatedOn())
                 .setDescription(updateEventUserRequest.getDescription() == null ? oldEvent.getDescription() : updateEventUserRequest.getDescription())
-                .setEventDate(updateEventUserRequest.getEventDate() == null ? oldEvent.getEventDate() : LocalDateTime.parse(updateEventUserRequest.getEventDate(), DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                .setEventDate(updateEventUserRequest.getEventDate() == null ? oldEvent.getEventDate() : LocalDateTime.parse(updateEventUserRequest.getEventDate(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))
                 .setInitiator(oldEvent.getInitiator())
                 .setLocation(updateEventUserRequest.getLocation() == null ? oldEvent.getLocation() : updateEventUserRequest.getLocation())
                 .setPaid(updateEventUserRequest.getPaid() == null ? oldEvent.getPaid() : updateEventUserRequest.getPaid())

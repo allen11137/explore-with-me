@@ -35,7 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hibernate.type.descriptor.java.DateTypeDescriptor.DATE_FORMAT;
+
+import static ru.practicum.event.Constant.DATA_TIME_PATTERN;
 
 @Slf4j
 @Service
@@ -57,7 +58,7 @@ public class EventService {
 
         if (rangeStart != null && rangeEnd != null) {
             if (rangeStart.isAfter(rangeEnd)) {
-                throw new IllegalArgumentException("Время начала позднее времени окончания");
+                throw new IllegalArgumentException("Range start time is after range end time");
             }
         }
 
@@ -116,7 +117,7 @@ public class EventService {
         }
 
         EndpointHitDto endpointHitDto = new EndpointHitDto(null, "main-service", request.getRequestURI(),
-                request.getRemoteAddr(), timeNow.format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
+                request.getRemoteAddr(), timeNow.format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)));
 
         try {
             client.addRequest(request.getRemoteAddr(), endpointHitDto);
@@ -138,8 +139,8 @@ public class EventService {
         if (event == null) {
             throw new NotFoundException("Событие не найдено.");
         }
-        String timeStart = event.getCreatedOn().format(DateTimeFormatter.ofPattern(DATE_FORMAT));
-        String timeNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+        String timeStart = event.getCreatedOn().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN));
+        String timeNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN));
         String[] uris = {request.getRequestURI()};
 
         ResponseEntity<Object> response = client.getStats(request.getRequestURI(), timeStart, timeNow, uris, true);
@@ -211,8 +212,8 @@ public class EventService {
                         .collect(Collectors.toList());
             }
         } else {
-            LocalDateTime start = LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern(DATE_FORMAT));
-            LocalDateTime end = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern(DATE_FORMAT));
+            LocalDateTime start = LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern(DATA_TIME_PATTERN));
+            LocalDateTime end = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ofPattern(DATA_TIME_PATTERN));
             if (start.isAfter(end)) {
                 throw new IllegalArgumentException();
             }
@@ -310,7 +311,7 @@ public class EventService {
             throw new DateEventException("Время начала до даты мероприятия");
         }
         if (updateEventAdminRequest.getEventDate() != null) {
-            LocalDateTime newEventDate = LocalDateTime.parse(updateEventAdminRequest.getEventDate(), DateTimeFormatter.ofPattern(DATE_FORMAT));
+            LocalDateTime newEventDate = LocalDateTime.parse(updateEventAdminRequest.getEventDate(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN));
             LocalDateTime currentTime = LocalDateTime.now();
             if (newEventDate.isBefore(currentTime) || newEventDate.isEqual(currentTime)) {
                 throw new IllegalArgumentException("Время начала раньше или равно дате события");
@@ -337,7 +338,7 @@ public class EventService {
     @Transactional
     public EventCompleteDto addPrivateEvent(Long userId, AddEventDto newEventDto) {
         LocalDateTime start = LocalDateTime.parse(newEventDto.getEventDate(),
-                DateTimeFormatter.ofPattern(DATE_FORMAT));
+                DateTimeFormatter.ofPattern(DATA_TIME_PATTERN));
 
         if (start.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new IllegalArgumentException("Время начала указано неверно.");
@@ -388,7 +389,7 @@ public class EventService {
         }
         LocalDateTime start = oldEvent.getEventDate();
         if (updateEventUserRequest.getEventDate() != null) {
-            if (LocalDateTime.parse(updateEventUserRequest.getEventDate(), DateTimeFormatter.ofPattern(DATE_FORMAT))
+            if (LocalDateTime.parse(updateEventUserRequest.getEventDate(), DateTimeFormatter.ofPattern(DATA_TIME_PATTERN))
                     .isBefore(start.plusHours(2))) {
                 throw new IllegalArgumentException("Время начала предшествует событию или равно ему.");
             }
@@ -407,7 +408,7 @@ public class EventService {
 
     @Transactional
     public List<ParticipantRequestDto> getPrivateRequestsEventsUser(Long userId, Long eventId) {
-        return participationRepository.getParticipationRequestsByEvent(eventId)
+        return participationRepository.getParticipantRequestsByEvent(eventId)
                 .stream()
                 .map(MapperOfParticipant::toParticipationRequestDto)
                 .collect(Collectors.toList());
@@ -423,7 +424,7 @@ public class EventService {
         }
         Status status = Status.valueOf(eventRequestStatusUpdateRequest.getStatus());
 
-        List<Participant> list = participationRepository.getParticipationRequestByIdIn(eventRequestStatusUpdateRequest.getRequestIds());
+        List<Participant> list = participationRepository.getParticipantRequestByIdIn(eventRequestStatusUpdateRequest.getRequestIds());
         List<Participant> listPending = new ArrayList<>();
         List<Participant> listRejected = new ArrayList<>();
         List<Participant> listOld = new ArrayList<>();

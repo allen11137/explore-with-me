@@ -30,7 +30,7 @@ public class UserService {
     }
 
     @Transactional
-    public Collection<CompleteUserDto> getUsersAdmin(Collection<Long> ids, Integer from, Integer size) {
+    public Collection<CompleteUserDto> getAdminUsers(Collection<Long> ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         if (ids == null || ids.size() == 0) {
             return userRepository.findAll(pageable).stream()
@@ -44,25 +44,25 @@ public class UserService {
     }
 
     @Transactional
-    public CompleteUserDto addUserAdmin(AddUserRequest userRequest) {
+    public CompleteUserDto addAdminUser(AddUserRequest userRequest) {
         User user = MapperOfUser.toUser(userRequest);
         try {
             return MapperOfUser.toUserDto(userRepository.saveAndFlush(user));
         } catch (DataIntegrityViolationException e) {
-            log.info("Duplicate email address");
+            log.info("Такой email уже существует");
             throw new DoubleEmailException(userRequest.getEmail());
         }
     }
 
     @Transactional
-    public void deleteUserAdmin(Long userId) {
+    public void deleteAdminUser(Long userId) {
         getUserById(userId);
         userRepository.removeUserById(userId);
     }
 
     public User getUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
-            throw new NotFoundException("User not found by id.");
+            throw new NotFoundException("Пользователь не найден");
         });
     }
 }

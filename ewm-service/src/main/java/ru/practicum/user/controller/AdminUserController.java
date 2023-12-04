@@ -1,4 +1,4 @@
-package ru.practicum.controller;
+package ru.practicum.user.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -25,20 +25,20 @@ public class AdminUserController {
 
     @PostMapping
     public ResponseEntity<CompleteUserDto> addUser(@Valid @NonNull @RequestBody AddUserRequest userRequest) {
-        return new ResponseEntity<>(userService.addUserAdmin(userRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.addAdminUser(userRequest), HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<Collection<CompleteUserDto>> getUsers(@RequestParam(required = false) Collection<Long> ids,
                                                                 @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        return new ResponseEntity<>(userService.getUsersAdmin(ids, from, size), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAdminUsers(ids, from, size), HttpStatus.OK);
     }
 
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{userId}")
     public void deleteUser(@NonNull @Positive @PathVariable("userId") Long userId) {
-        userService.deleteUserAdmin(userId);
+        userService.deleteAdminUser(userId);
     }
 }

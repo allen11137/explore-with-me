@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class EndpointHitDto {
+
     private Integer id;
 
     private String app;
