@@ -47,7 +47,7 @@ public class ParticipantService {
 
     @Transactional
     public ParticipantRequestDto addPrivateParticipationRequest(Long userId, Long eventId) {
-        Event event = eventRepository.getEventsById(eventId);
+        Event event = eventRepository.findById(eventId).orElse(null);
         List<Participant> participationRequestList = participationRepository.getParticipantRequestsByRequesterAndEvent(userId, eventId);
         validatePrivateAddParticipationRequest(event, participationRequestList, userId);
         Participant newParticipationRequest =
@@ -99,7 +99,7 @@ public class ParticipantService {
         if (participationRequest.getStatus().equals(Status.PENDING)) {
             participationRequest.setStatus(Status.CANCELED);
         } else if (participationRequest.getStatus().equals(Status.CONFIRMED)) {
-            Event event = eventRepository.getEventsById(participationRequest.getEvent());
+            Event event = eventRepository.findById(participationRequest.getEvent()).orElse(null);
             event.setConfirmedRequests(event.getConfirmedRequests() - 1);
             eventRepository.save(event);
             participationRequest.setStatus(Status.CANCELED);

@@ -28,7 +28,7 @@ public class PublicEventController {
     private final EventService eventService;
 
     @GetMapping
-    public ResponseEntity<List<EventBriefDto>> getEventsAndStatsPublic(HttpServletRequest request,
+    public ResponseEntity<List<EventBriefDto>> getPublicEventsAndStats(HttpServletRequest request,
                                                                        @RequestParam(required = false) String text,
                                                                        @RequestParam(required = false) List<Long> categories,
                                                                        @RequestParam(required = false) Boolean paid,
@@ -45,7 +45,7 @@ public class PublicEventController {
     }
 
     @GetMapping("/{Id}")
-    public ResponseEntity<EventCompleteDto> getEventByIdAndStatsPublic(HttpServletRequest request,
+    public ResponseEntity<EventCompleteDto> getPublicEventByIdAndStats(HttpServletRequest request,
                                                                        @Positive @PathVariable("Id") Long eventId) {
         return new ResponseEntity<>(eventService.getPublicEventByIdAndStats(request, eventId), HttpStatus.OK);
     }

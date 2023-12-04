@@ -45,7 +45,7 @@ public class EventService {
     private final RepositoryOfEvent eventRepository;
     private final RepositoryOfCategory repositoryOfCategory;
     private final UserService userService;
-    private final RepositoryOfParticipant participationRepository;
+    private final RepositoryOfParticipant repositoryOfParticipant;
     private final RepositoryOfLocation locationRepository;
     private final Client client;
 
@@ -271,7 +271,7 @@ public class EventService {
 
     @Transactional
     public EventCompleteDto updateAdminEvent(Long eventId, AdminUpdateEventRequest updateEventAdminRequest) {
-        Event oldEvent = eventRepository.getEventsById(eventId);
+        Event oldEvent = eventRepository.findById(eventId).orElse(null);
 
         validateAdminUpdateEvent(oldEvent, updateEventAdminRequest);
 
@@ -408,7 +408,7 @@ public class EventService {
 
     @Transactional
     public List<ParticipantRequestDto> getPrivateRequestsEventsUser(Long userId, Long eventId) {
-        return participationRepository.getParticipantRequestsByEvent(eventId)
+        return repositoryOfParticipant.getParticipantRequestsByEvent(eventId)
                 .stream()
                 .map(MapperOfParticipant::toParticipationRequestDto)
                 .collect(Collectors.toList());
@@ -424,7 +424,7 @@ public class EventService {
         }
         Status status = Status.valueOf(eventRequestStatusUpdateRequest.getStatus());
 
-        List<Participant> list = participationRepository.getParticipantRequestByIdIn(eventRequestStatusUpdateRequest.getRequestIds());
+        List<Participant> list = repositoryOfParticipant.getParticipantRequestByIdIn(eventRequestStatusUpdateRequest.getRequestIds());
         List<Participant> listPending = new ArrayList<>();
         List<Participant> listRejected = new ArrayList<>();
         List<Participant> listOld = new ArrayList<>();
@@ -470,7 +470,7 @@ public class EventService {
             participationRequest.setStatus(Status.CONFIRMED);
             listPending.add(participationRequest);
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-            participationRepository.saveAndFlush(participationRequest);
+            repositoryOfParticipant.saveAndFlush(participationRequest);
 
             if (Long.valueOf(event.getParticipantLimit()).equals(event.getConfirmedRequests())) {
                 list.removeAll(listOld);
@@ -486,7 +486,7 @@ public class EventService {
         } else {
             participationRequest.setStatus(Status.REJECTED);
             listRejected.add(participationRequest);
-            participationRepository.saveAndFlush(participationRequest);
+            repositoryOfParticipant.saveAndFlush(participationRequest);
             listDtoReject = list.stream().map(MapperOfParticipant::toParticipationRequestDto).collect(Collectors.toList());
             return new EventStatusUpdateResponse(new ArrayList<>(), listDtoReject);
         }

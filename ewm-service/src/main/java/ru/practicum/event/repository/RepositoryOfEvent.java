@@ -71,11 +71,9 @@ public interface RepositoryOfEvent extends JpaRepository<Event, Long>, JpaSpecif
 
     Set<Event> getEventsByIdIn(List<Long> events);
 
-    Event getEventsById(Long eventId);
-
+    Optional<Event> findById(Long id);
 
     List<Event> getEventsByInitiatorId(Long userId);
-
 
     @Query(value = "select * from events as e " +
             "where e.state=?1 " +
