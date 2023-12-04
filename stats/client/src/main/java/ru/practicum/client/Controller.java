@@ -24,7 +24,7 @@ public class Controller {
                                               @RequestParam(required = false, name = "uris") String[] uris,
                                               @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
         String ipResource = request.getRemoteAddr();
-        return client.getStats(ipResource, start, end, uris, unique);
+        return client.getStat(ipResource, start, end, uris, unique);
     }
 
     @PostMapping("/hit")

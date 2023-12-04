@@ -31,7 +31,7 @@ public class Client {
         return post("/hit", ipResource, null, endpointHitDto);
     }
 
-    public ResponseEntity<Object> getStats(String ipResource, String start, String end, String[] uris, boolean unique) {
+    public ResponseEntity<Object> getStat(String ipResource, String start, String end, String[] uris, boolean unique) {
         Map<String, Object> parameters;
         if (uris != null) {
             parameters = Map.of(

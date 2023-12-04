@@ -143,7 +143,7 @@ public class EventService {
         String timeNow = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN));
         String[] uris = {request.getRequestURI()};
 
-        ResponseEntity<Object> response = client.getStats(request.getRequestURI(), timeStart, timeNow, uris, true);
+        ResponseEntity<Object> response = client.getStat(request.getRequestURI(), timeStart, timeNow, uris, true);
         List<StatsDto> resp = (List<StatsDto>) response.getBody();
         if (resp.size() == 0) {
             event.setViews(event.getViews() + 1);
