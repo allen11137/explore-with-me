@@ -1,6 +1,7 @@
 package ru.practicum.event.mapper;
 
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.category.mapper.MapperOfCategory;
 import ru.practicum.category.model.Category;
 import ru.practicum.event.dto.*;
@@ -15,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 import static ru.practicum.event.Constant.DATA_TIME_PATTERN;
 
-
+@UtilityClass
 public class MapperOfEvent {
     public static EventCompleteDto toEventFullDto(Event event) {
         return new EventCompleteDto()

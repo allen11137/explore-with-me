@@ -32,6 +32,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<ErrorApi> handle(Exception ex) throws IOException {
         ErrorApi apiError = getApiError(Collections.singletonList(error(ex)), "Запрос неправильно составлен.", ex.getLocalizedMessage());
+        logger.error("Error with ExceptionHandler by IllegalArgumentException.class", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -45,6 +46,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
             errors.add(error.getField());
         }
         ErrorApi apiError = getApiError(errors, "Запрашиваемый объект не найден.", ex.getLocalizedMessage());
+        logger.error("Error by MethodArgumentNotValidException.class", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -55,6 +57,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
             errors.add(violation.getMessage());
         }
         ErrorApi apiError = getApiError(errors, "Запрашиваемый объект не найден.", ex.getLocalizedMessage());
+        logger.error("Error with ExceptionHandler by ConstraintViolationException.class", ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -73,54 +76,63 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)   // для всех ситуаций, если искомый объект не найден
     public ErrorApi handle(final NotFoundException e) throws IOException {
+        logger.error("Error with ExceptionHandler by NotFoundException.class", e);
         return getApiError(error(e), HttpStatus.NOT_FOUND, "Запрашиваемый объект не найден.", e.getLocalizedMessage());
     }
 
     @ExceptionHandler(CategoryValidationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)   // Категория существует
     public ErrorApi handle(final CategoryValidationException e) throws IOException {
+        logger.error("Error with ExceptionHandler by CategoryValidationException.class", e);
         return getApiError(error(e), HttpStatus.CONFLICT, "Для запрошенной операции не выполнены условия.", e.getLocalizedMessage());
     }
 
     @ExceptionHandler(DoubleNameException.class)
     @ResponseStatus(HttpStatus.CONFLICT)  //если есть дубликат Name.
     public ErrorApi handleThrowable(final DoubleNameException e) throws IOException {
+        logger.error("Error with ExceptionHandler by DoubleNameException.class", e);
         return getApiError(error(e), HttpStatus.CONFLICT, "Имя уже существует.", e.getLocalizedMessage());
     }
 
     @ExceptionHandler(DoubleEmailException.class)
     @ResponseStatus(HttpStatus.CONFLICT)  //если есть дубликат Email.
     public ErrorApi handleThrowable(final DoubleEmailException e) throws IOException {
+        logger.error("Error with ExceptionHandler by DoubleEmailException.class", e);
         return getApiError(error(e), HttpStatus.CONFLICT, "Email уже существует.", e.getLocalizedMessage());
     }
 
     @ExceptionHandler(DateEventException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorApi handleThrowable(final DateEventException e) throws IOException {
+        logger.error("Error with ExceptionHandler by DateEventException.class", e);
         return getApiError(error(e), HttpStatus.CONFLICT, "Неверное время.", e.getLocalizedMessage());
     }
 
     @ExceptionHandler(ArgumentStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorApi handleThrowable(final ArgumentStateException e) throws IOException {
+        logger.error("Error with ExceptionHandler by ArgumentStateException.class", e);
         return getApiError(error(e), HttpStatus.CONFLICT, "Запрашиваемый объект не найден.", e.getLocalizedMessage());
     }
 
     @ExceptionHandler(OverflowLimitException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorApi handleThrowable(final OverflowLimitException e) throws IOException {
+        logger.error("Error with ExceptionHandler by OverflowLimitException.class", e);
         return getApiError(error(e), HttpStatus.CONFLICT, "Достигнут лимит участников", e.getLocalizedMessage());
     }
 
     @ExceptionHandler(ParticipantStatusException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorApi handleThrowable(final ParticipantStatusException e) throws IOException {
+        logger.error("Error with ExceptionHandler by ParticipantStatusException.class", e);
         return getApiError(error(e), HttpStatus.CONFLICT, "Статус запроса: NOT PENDING", e.getLocalizedMessage());
     }
 
     @ExceptionHandler(DoubleParticipationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorApi handleThrowable(final DoubleParticipationException e) throws IOException {
+        logger.error("Error with ExceptionHandler by DoubleParticipationException.class", e);
         return getApiError(error(e), HttpStatus.CONFLICT, "Запрос уже был создан", e.getLocalizedMessage());
     }
 

@@ -29,7 +29,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Collection<CompleteUserDto> getAdminUsers(Collection<Long> ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         if (ids == null || ids.size() == 0) {

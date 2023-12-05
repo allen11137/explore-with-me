@@ -28,7 +28,7 @@ public class CategoryService {
     private final RepositoryOfCategory repositoryOfCategory;
     private final RepositoryOfEvent repositoryOfEvent;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CategoryDto> getPublicCategory(Integer from, Integer size) {
 
         Pageable pageable = PageRequest.of(from / size, size);
@@ -38,7 +38,7 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CategoryDto getPublicCategoryById(Long catId) {
         Category category = repositoryOfCategory.findCategoryById(catId);
         if (category == null) {

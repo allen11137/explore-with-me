@@ -68,7 +68,7 @@ public class CompilationService {
         repositoryOfCompilation.removeCompilationById(compId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CompilationDto> getPublicCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         if (pinned != null) {

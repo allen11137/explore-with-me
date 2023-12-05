@@ -30,7 +30,7 @@ public class ParticipantService {
     private final RepositoryOfEvent eventRepository;
     private final UserService userService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ParticipantRequestDto> getListOfParticipationRequest(Long userId) {
         userService.getUserById(userId);
         List<Long> eventIds = eventRepository.getEventsByInitiatorId(userId).stream()

@@ -1,9 +1,7 @@
 package ru.practicum.compilation.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 import ru.practicum.event.model.Event;
 
@@ -11,14 +9,14 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "compilations")
 public class Compilation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
