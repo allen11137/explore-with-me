@@ -13,16 +13,23 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Accessors(chain = true)
+@Entity
 @Table(name = "hits")
 public class Stats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    String app;
-    String uri;
-    String ip;
-    @Column(name = "creation_timestamp")
-    LocalDateTime timestamp;
+    private Integer id;
+
+    @Column(nullable = false)
+    private String app;
+
+    @Column(nullable = false)
+    private String uri;
+
+    @Column(nullable = false)
+    private String ip;
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 }

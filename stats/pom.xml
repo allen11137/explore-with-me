@@ -12,6 +12,7 @@
     <artifactId>stats</artifactId>
     <packaging>pom</packaging>
 
+    <name>stats</name>
     <modules>
         <module>stats-server</module>
         <module>client</module>

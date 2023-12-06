@@ -1,16 +1,11 @@
 package ru.practicum;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@Accessors(chain = true)
+@SpringBootApplication
 public class StatsDto {
-    private String app;
-    private String uri;
-    private long hits;
+    public static void main(String[] args) {
+        SpringApplication.run(StatsDto.class, args);
+    }
 }
