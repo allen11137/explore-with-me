@@ -25,11 +25,9 @@ public interface RepositoryOfEvent extends JpaRepository<Event, Long>, JpaSpecif
 
     List<Event> getEventsByCategoryIdIn(List<Long> categories, Pageable pageable);
 
-
     List<Event> getEventsByInitiatorIdInAndCategoryIdIn(List<Long> users, List<Long> categories, Pageable pageable);
 
     List<Event> getEventsByInitiatorIdInAndStateIn(List<Long> users, List<State> states, Pageable pageable);
-
 
     List<Event> getEventsByEventDateAfterAndEventDateBefore(LocalDateTime start, LocalDateTime end, Pageable pageable);
 
@@ -123,7 +121,7 @@ public interface RepositoryOfEvent extends JpaRepository<Event, Long>, JpaSpecif
             "and e.paid= :paid " +
             "and e.participant_limit = 0 or e.participant_limit > e.confirmed_requests " +
             "and e.event_date > :time " +
-            "and upper(e.annotation) like upper(?4) or upper(e.description) like upper(?4) " +
+            "and upper(e.annotation) like upper(:text) or upper(e.description) like upper(:text) " +
             "order by e.event_date desc ", nativeQuery = true)
     List<Event> getEvents(@Param("state") String state,
                           @Param("paid") boolean paid,

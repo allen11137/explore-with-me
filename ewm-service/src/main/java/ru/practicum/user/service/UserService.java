@@ -51,7 +51,7 @@ public class UserService {
 
     public void deleteAdminUser(Long userId) {
         getUserById(userId);
-        userRepository.removeUserById(userId);
+        userRepository.deleteById(userId);
     }
 
     public User getUserById(Long userId) {
