@@ -10,12 +10,9 @@ import java.util.List;
 
 @Repository
 public interface RepositoryOfUser extends JpaRepository<User, Long> {
-
     User save(User user);
 
     List<User> getUsersByIdIn(Collection<Long> ids, Pageable pageable);
 
     void removeUserById(Long userId);
-
-    User getUserById(Long userId);
 }

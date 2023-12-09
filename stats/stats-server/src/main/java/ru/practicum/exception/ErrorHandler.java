@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -59,9 +58,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<ApiError> handleViolaitionConstraint(ConstraintViolationException ex) {
         List<String> errors = new ArrayList<>();
-        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            errors.add(violation.getMessage());
-        }
+        ex.getConstraintViolations().forEach(v -> errors.add(v.getMessage()));
         ApiError apiError = ApiError.builder()
                 .errors(errors)
                 .status(HttpStatus.BAD_REQUEST)

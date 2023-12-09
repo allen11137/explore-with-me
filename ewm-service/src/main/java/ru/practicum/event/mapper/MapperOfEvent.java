@@ -61,9 +61,9 @@ public class MapperOfEvent {
                 .setInitiator(initiator)
                 .setLocation(newEventDto.getLocation())
                 .setConfirmedRequests(0L)
-                .setPaid(newEventDto.getPaid() == null ? false : newEventDto.getPaid())
+                .setPaid(newEventDto.getPaid() != null && newEventDto.getPaid())
                 .setParticipantLimit(newEventDto.getParticipantLimit() == null ? 0 : newEventDto.getParticipantLimit())
-                .setRequestModeration(newEventDto.getRequestModeration() == null ? true : newEventDto.getRequestModeration())
+                .setRequestModeration(newEventDto.getRequestModeration() == null || newEventDto.getRequestModeration())
                 .setState(State.PENDING)
                 .setTitle(newEventDto.getTitle())
                 .setViews(0L);

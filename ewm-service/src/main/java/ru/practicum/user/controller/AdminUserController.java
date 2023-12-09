@@ -20,7 +20,6 @@ import java.util.Collection;
 @AllArgsConstructor
 @RequestMapping(path = "/admin/users")
 public class AdminUserController {
-
     private final UserService userService;
 
     @PostMapping
@@ -34,7 +33,6 @@ public class AdminUserController {
                                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return new ResponseEntity<>(userService.getAdminUsers(ids, from, size), HttpStatus.OK);
     }
-
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{userId}")
