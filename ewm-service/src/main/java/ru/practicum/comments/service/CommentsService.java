@@ -6,17 +6,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.comments.dto.AuthorWithCommentsDto;
-import ru.practicum.comments.dto.CommentsDto;
+import ru.practicum.comments.dto.CommentsRequestDto;
+import ru.practicum.comments.dto.CommentsResponseDto;
 import ru.practicum.comments.mapper.MapperOfComment;
 import ru.practicum.comments.model.Comments;
 import ru.practicum.comments.repository.RepositoryOfComments;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.service.EventService;
+import ru.practicum.exception.AuthorValidationException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.user.model.User;
 import ru.practicum.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,53 +32,41 @@ public class CommentsService {
     private final UserService userService;
     private final EventService eventService;
 
-    public CommentsDto addCommentForUser(CommentsDto commentDto) {
+    public CommentsResponseDto addCommentForUser(CommentsRequestDto commentDto) {
         User user = userService.getUserById(commentDto.getAuthor());
         Event event = eventService.findEventById(commentDto.getEvent());
         return MapperOfComment.toCommentDto(commentRepository.save(MapperOfComment.toComment(commentDto, user, event)));
     }
 
-    public CommentsDto updateCommentForUser(Long commentId, CommentsDto commentDto) {
+    public CommentsResponseDto updateCommentForUser(Long commentId, CommentsRequestDto commentDto) {
         User user = userService.getUserById(commentDto.getAuthor());
-        Event event = eventService.findEventById(commentDto.getEvent());
-
-        if (!commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Comment by id [" + commentId + "] not found."))
-                .getAuthor()
-                .getId().equals(commentDto.getAuthor())) {
-            throw new NotFoundException("У пользователя нет комментариев.");
-        }
-
-        Comments actualComment = MapperOfComment.toComment(commentDto, user, event);
         Comments comment = getComment(commentId);
-        actualComment.setId(comment.getId());
-        if (actualComment.getText() == null || actualComment.getText().isBlank()) {
-            actualComment.setText(comment.getText());
-        } else {
-            actualComment.setText(actualComment.getText());
+
+        if (!comment.getAuthor().getId().equals(user.getId())) {
+            throw new AuthorValidationException("Пользователь с id " + user.getId() + " не может обновить комментарий.");
         }
-        if (actualComment.getCreatedOn() == null) {
-            actualComment.setCreatedOn(comment.getCreatedOn());
-        } else {
-            actualComment.setCreatedOn(actualComment.getCreatedOn());
+
+        String text = commentDto.getText();
+        if (text != null && !text.isBlank()) {
+            comment.setText(text);
         }
-        actualComment.setUpdatedOn(LocalDateTime.now());
-        return MapperOfComment.toCommentDto(commentRepository.save(actualComment));
+        comment.setUpdatedOn(LocalDateTime.now());
+        return MapperOfComment.toCommentDto(commentRepository.save(comment));
     }
 
-    public List<CommentsDto> getCommentsForUser(Long eventId, Integer from, Integer size) {
+    public List<CommentsResponseDto> getCommentsForUser(Long eventId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        List<CommentsDto> commentsDto = commentRepository.findCommentsByEventId(eventId, pageable).stream()
+        List<CommentsResponseDto> commentsDto = commentRepository.findCommentsByEventId(eventId, pageable).stream()
                 .map(MapperOfComment::toCommentDto)
                 .collect(Collectors.toList());
         if (commentsDto.isEmpty()) {
-            throw new NotFoundException("У события нет комментариев.");
+            return Collections.emptyList();
         } else {
             return commentsDto;
         }
     }
 
-    public CommentsDto getCommentByIdForUser(Long commentId) {
+    public CommentsResponseDto getCommentByIdForUser(Long commentId) {
         return MapperOfComment.toCommentDto(getComment(commentId));
     }
 
@@ -90,11 +81,11 @@ public class CommentsService {
 
     public List<AuthorWithCommentsDto> getCommentsForAdmin(Long eventId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        List<CommentsDto> commentsDto = commentRepository.findCommentsByEventId(eventId, pageable).stream()
+        List<CommentsResponseDto> commentsDto = commentRepository.findCommentsByEventId(eventId, pageable).stream()
                 .map(MapperOfComment::toCommentDto)
                 .collect(Collectors.toList());
         if (commentsDto.isEmpty()) {
-            throw new NotFoundException("У события нет комментариев.");
+            return Collections.emptyList();
         } else {
             return commentsDto.stream()
                     .map(commentDto -> MapperOfComment.toCommentWithFullAuthorDto(commentDto, userService.getUserById(commentDto.getAuthor())))
@@ -103,7 +94,7 @@ public class CommentsService {
     }
 
     public AuthorWithCommentsDto getCommentByIdForAdmin(Long commentId) {
-        CommentsDto commentDto = MapperOfComment.toCommentDto(getComment(commentId));
+        CommentsResponseDto commentDto = MapperOfComment.toCommentDto(getComment(commentId));
         return MapperOfComment.toCommentWithFullAuthorDto(commentDto, userService.getUserById(commentDto.getAuthor()));
     }
 

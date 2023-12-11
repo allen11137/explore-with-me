@@ -10,7 +10,7 @@ import static ru.practicum.event.Constant.DATA_TIME_PATTERN;
 
 @UtilityClass
 public class MapperOfParticipant {
-    public static ParticipantRequestDto toParticipationRequestDto(Participant participationRequest) {
+    public ParticipantRequestDto toParticipationRequestDto(Participant participationRequest) {
         return new ParticipantRequestDto()
                 .setId(participationRequest.getId())
                 .setCreated(participationRequest.getCreated().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)))

@@ -31,10 +31,7 @@ import ru.practicum.user.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.practicum.event.Constant.DATA_TIME_PATTERN;
@@ -106,7 +103,7 @@ public class EventService {
         sendRequestToClient(request, endpointHitDto);
 
         if (list.isEmpty()) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return list.stream()
                 .map(MapperOfEvent::toEventShortDto)

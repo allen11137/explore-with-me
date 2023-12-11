@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.State;
 
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@Repository
+
 public interface RepositoryOfEvent extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
 
     List<Event> getEventsByStateIn(List<State> states, Pageable pageable);

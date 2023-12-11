@@ -2,29 +2,29 @@ package ru.practicum.comments.mapper;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.comments.dto.AuthorWithCommentsDto;
-import ru.practicum.comments.dto.CommentsDto;
+import ru.practicum.comments.dto.CommentsRequestDto;
+import ru.practicum.comments.dto.CommentsResponseDto;
 import ru.practicum.comments.model.Comments;
 import ru.practicum.event.model.Event;
+import ru.practicum.user.mapper.MapperOfUser;
 import ru.practicum.user.model.User;
-
-import java.time.LocalDateTime;
 
 
 @UtilityClass
 public class MapperOfComment {
 
-    public static AuthorWithCommentsDto toCommentWithFullAuthorDto(CommentsDto commentDto, User user) {
+    public AuthorWithCommentsDto toCommentWithFullAuthorDto(CommentsResponseDto commentDto, User user) {
         return new AuthorWithCommentsDto()
                 .setId(commentDto.getId())
                 .setText(commentDto.getText())
                 .setEvent(commentDto.getEvent())
                 .setCreatedOn(commentDto.getCreatedOn())
                 .setUpdatedOn(commentDto.getUpdatedOn())
-                .setAuthor(user);
+                .setAuthor(MapperOfUser.toUserDto(user));
     }
 
-    public static CommentsDto toCommentDto(Comments comment) {
-        return new CommentsDto()
+    public CommentsResponseDto toCommentDto(Comments comment) {
+        return new CommentsResponseDto()
                 .setId(comment.getId())
                 .setText(comment.getText())
                 .setEvent(comment.getEvent().getId())
@@ -33,11 +33,10 @@ public class MapperOfComment {
                 .setAuthor(comment.getAuthor().getId());
     }
 
-    public static Comments toComment(CommentsDto commentDto, User user, Event event) {
+    public Comments toComment(CommentsRequestDto commentDto, User user, Event event) {
         return new Comments()
                 .setText(commentDto.getText())
                 .setEvent(event)
-                .setAuthor(user)
-                .setCreatedOn(LocalDateTime.now());
+                .setAuthor(user);
     }
 }

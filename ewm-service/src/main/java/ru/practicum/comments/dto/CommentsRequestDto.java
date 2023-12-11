@@ -3,15 +3,14 @@ package ru.practicum.comments.dto;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Accessors(chain = true)
-public class CommentsDto {
-    private Long id;
+public class CommentsRequestDto {
+    @NotNull
     private String text;
     private Long event;
+    @NotNull
     private Long author;
-    private LocalDateTime createdOn;
-    private LocalDateTime updatedOn;
 }

@@ -9,20 +9,20 @@ import ru.practicum.user.model.User;
 @UtilityClass
 public class MapperOfUser {
 
-    public static CompleteUserDto toUserDto(User user) {
+    public CompleteUserDto toUserDto(User user) {
         return new CompleteUserDto()
                 .setId(user.getId())
                 .setName(user.getName())
                 .setEmail(user.getEmail());
     }
 
-    public static UserDto toUserBriefDto(User user) {
+    public UserDto toUserBriefDto(User user) {
         return new UserDto()
                 .setId(user.getId())
                 .setName(user.getName());
     }
 
-    public static User toUser(AddUserRequest userRequest) {
+    public User toUser(AddUserRequest userRequest) {
         return new User()
                 .setName(userRequest.getName())
                 .setEmail(userRequest.getEmail());

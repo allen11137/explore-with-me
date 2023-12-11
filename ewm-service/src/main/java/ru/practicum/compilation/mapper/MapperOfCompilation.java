@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class MapperOfCompilation {
-    public static CompilationDto toCompilationDto(Compilation compilation) {
+    public CompilationDto toCompilationDto(Compilation compilation) {
         return new CompilationDto()
                 .setId(compilation.getId())
                 .setEvents(compilation.getEvents().stream().map(MapperOfEvent::toEventShortDto).collect(Collectors.toList()))
@@ -22,14 +22,14 @@ public class MapperOfCompilation {
                 .setTitle(compilation.getTitle());
     }
 
-    public static Compilation toCompilation(AddCompilationDto addCompilationDto, Set<Event> events) {
+    public Compilation toCompilation(AddCompilationDto addCompilationDto, Set<Event> events) {
         return new Compilation()
                 .setEvents(events)
                 .setPinned(addCompilationDto.isPinned())
                 .setTitle(addCompilationDto.getTitle());
     }
 
-    public static Compilation toCompilation(RequestUpdateCompilation requestUpdateCompilation, Set<Event> events) {
+    public Compilation toCompilation(RequestUpdateCompilation requestUpdateCompilation, Set<Event> events) {
         return new Compilation()
                 .setEvents(events)
                 .setPinned(requestUpdateCompilation.isPinned());

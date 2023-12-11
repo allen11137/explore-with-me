@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 public class MapperOfStats {
     public static final String DATA_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
-    public static EndpointHitDto toEndpointHitDto(Stats stats) {
+    public EndpointHitDto toEndpointHitDto(Stats stats) {
         return new EndpointHitDto()
                 .setId(stats.getId())
                 .setApp(stats.getApp())
@@ -21,7 +21,7 @@ public class MapperOfStats {
                 .setTimestamp(stats.getTimestamp().format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)));
     }
 
-    public static Stats toStats(EndpointHitDto endpointHitDto) {
+    public Stats toStats(EndpointHitDto endpointHitDto) {
         return new Stats()
                 .setApp(endpointHitDto.getApp())
                 .setUri(endpointHitDto.getUri())

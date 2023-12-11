@@ -5,11 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import ru.practicum.event.model.Event;
 import ru.practicum.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -36,10 +37,11 @@ public class Comments {
     @JoinColumn(name = "author_id")
     private User author;
 
-    @NotNull
+    @CreationTimestamp
     @Column(name = "created_on")
     private LocalDateTime createdOn;
 
+    @UpdateTimestamp
     @Column(name = "updated_on")
     private LocalDateTime updatedOn;
 }
