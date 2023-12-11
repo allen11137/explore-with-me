@@ -11,8 +11,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-import static ru.practicum.controller.StatController.DATA_TIME_PATTERN;
+import static ru.practicum.mapper.MapperOfStats.DATA_TIME_PATTERN;
 
 @Service
 @RequiredArgsConstructor
@@ -29,19 +30,13 @@ public class StatService {
                     end.format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)),
                     start.format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN))));
         }
-
         if (!isUnique) {
-            if (uris == null) {
-                return repositoryOfStats.findAllStats(start, end);
-            } else {
-                return repositoryOfStats.findStats(start, end, uris);
-            }
-        } else {
-            if (uris == null) {
-                return repositoryOfStats.findAllUniqueStats(start, end);
-            } else {
-                return repositoryOfStats.findUniqueStats(start, end, uris);
-            }
+            return Objects.isNull(uris)
+                    ? repositoryOfStats.findAllStats(start, end)
+                    : repositoryOfStats.findStats(start, end, uris);
         }
+        return Objects.isNull(uris)
+                ? repositoryOfStats.findAllUniqueStats(start, end)
+                : repositoryOfStats.findUniqueStats(start, end, uris);
     }
 }

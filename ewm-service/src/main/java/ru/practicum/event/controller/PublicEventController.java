@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.event.dto.EventCompleteDto;
 import ru.practicum.event.dto.EventBriefDto;
+import ru.practicum.event.dto.EventCompleteDto;
 import ru.practicum.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;

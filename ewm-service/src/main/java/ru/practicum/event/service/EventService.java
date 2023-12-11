@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.StatsDto;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.RepositoryOfCategory;
 import ru.practicum.client.Client;
+import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.mapper.MapperOfEvent;
 import ru.practicum.event.model.Event;
@@ -31,10 +31,8 @@ import ru.practicum.user.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-
 
 import static ru.practicum.event.Constant.DATA_TIME_PATTERN;
 
@@ -56,62 +54,45 @@ public class EventService {
         Pageable pageable = PageRequest.of(from / size, size);
         LocalDateTime timeNow = LocalDateTime.now();
 
-        if (rangeStart != null && rangeEnd != null) {
-            if (rangeStart.isAfter(rangeEnd)) {
-                throw new IllegalArgumentException("Range start time is after range end time");
-            }
+        if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
+            throw new IllegalArgumentException("Range start time is after range end time");
         }
 
-        List<Event> list = new ArrayList<>();
+        List<Event> list;
         if (text != null) {
             text = "%" + text + "%";
         }
+
         if (paid != null) {
             if (categories != null && text != null) {
-                list = eventRepository.getEvents(
-                        State.PUBLISHED.toString(), categories, paid, timeNow, text, pageable);
-
+                list = eventRepository.getEvents(State.PUBLISHED.toString(), categories, paid, timeNow, text, pageable);
             } else if (text == null && categories != null) {
-                list = eventRepository.getEvents(
-                        State.PUBLISHED.toString(), categories, paid, timeNow, pageable);
-
+                list = eventRepository.getEvents(State.PUBLISHED.toString(), categories, paid, timeNow, pageable);
             } else if (text != null) {
-                list = eventRepository.getEvents(
-                        State.PUBLISHED.toString(), paid, timeNow, text, pageable);
+                list = eventRepository.getEvents(State.PUBLISHED.toString(), paid, timeNow, text, pageable);
             } else {
-                list = eventRepository.getEvents(
-                        State.PUBLISHED.toString(), paid, timeNow, pageable);
+                list = eventRepository.getEvents(State.PUBLISHED.toString(), paid, timeNow, pageable);
             }
-
         } else {
             if (rangeStart == null && rangeEnd == null) {
                 if (categories != null && text != null) {
-                    list = eventRepository.getEvents(
-                            State.PUBLISHED.toString(), categories, timeNow, text, pageable);
+                    list = eventRepository.getEvents(State.PUBLISHED.toString(), categories, timeNow, text, pageable);
                 } else if (text == null && categories != null) {
-                    list = eventRepository.getEvents(State.PUBLISHED.toString(),
-                            categories, timeNow, pageable);
+                    list = eventRepository.getEvents(State.PUBLISHED.toString(), categories, timeNow, pageable);
                 } else if (text != null) {
-                    list = eventRepository.getEvents(State.PUBLISHED.toString(),
-                            timeNow, text, pageable);
+                    list = eventRepository.getEvents(State.PUBLISHED.toString(), timeNow, text, pageable);
                 } else {
-                    list = eventRepository.getEvents(State.PUBLISHED.toString(),
-                            timeNow, pageable);
+                    list = eventRepository.getEvents(State.PUBLISHED.toString(), timeNow, pageable);
                 }
             } else {
                 if (sort != null && sort.equals("EVENT_DATE")) {
-                    list = eventRepository.getEvents(State.PUBLISHED.toString(),
-                            categories, rangeStart, rangeEnd, text, pageable);
+                    list = eventRepository.getEvents(State.PUBLISHED.toString(), categories, rangeStart, rangeEnd, text, pageable);
                 } else if (text == null && categories != null) {
-                    list = eventRepository.getEvents(State.PUBLISHED.toString(),
-                            categories, rangeStart, rangeEnd, pageable);
-
+                    list = eventRepository.getEvents(State.PUBLISHED.toString(), categories, rangeStart, rangeEnd, pageable);
                 } else if (text != null) {
-                    list = eventRepository.getEvents(State.PUBLISHED.toString(), rangeStart,
-                            rangeEnd, text, pageable);
+                    list = eventRepository.getEvents(State.PUBLISHED.toString(), rangeStart, rangeEnd, text, pageable);
                 } else {
-                    list = eventRepository.getEvents(State.PUBLISHED.toString(),
-                            rangeStart, rangeEnd, pageable);
+                    list = eventRepository.getEvents(State.PUBLISHED.toString(), rangeStart, rangeEnd, pageable);
                 }
             }
         }
@@ -119,18 +100,22 @@ public class EventService {
         EndpointHitDto endpointHitDto = new EndpointHitDto(null, "main-service", request.getRequestURI(),
                 request.getRemoteAddr(), timeNow.format(DateTimeFormatter.ofPattern(DATA_TIME_PATTERN)));
 
-        try {
-            client.addRequest(request.getRemoteAddr(), endpointHitDto);
-        } catch (
-                RuntimeException e) {
-            throw new IllegalArgumentException(e.getLocalizedMessage());
-        }
+        sendRequestToClient(request, endpointHitDto);
 
         if (list.isEmpty()) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
+        return list.stream()
+                .map(MapperOfEvent::toEventShortDto)
+                .collect(Collectors.toList());
+    }
 
-        return list.stream().map(MapperOfEvent::toEventShortDto).collect(Collectors.toList());
+    private void sendRequestToClient(HttpServletRequest request, EndpointHitDto endpointHitDto) {
+        try {
+            client.addRequest(request.getRemoteAddr(), endpointHitDto);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException(e.getLocalizedMessage());
+        }
     }
 
     @Transactional
@@ -145,7 +130,7 @@ public class EventService {
 
         ResponseEntity<Object> response = client.getStat(request.getRequestURI(), timeStart, timeNow, uris, true);
         List<StatsDto> resp = (List<StatsDto>) response.getBody();
-        if (resp.size() == 0) {
+        if (Objects.nonNull(resp) && resp.size() == 0) {
             event.setViews(event.getViews() + 1);
             eventRepository.save(event);
         }
@@ -258,12 +243,13 @@ public class EventService {
                         .map(MapperOfEvent::toEventFullDto)
                         .collect(Collectors.toList());
 
-            } else
+            } else {
                 list = eventRepository.getEventsByInitiatorIdInAndStateInAndCategoryIdInAndEventDateAfterAndEventDateBefore(
                                 users, stateEnum, categories, start, end, pageable)
                         .stream()
                         .map(MapperOfEvent::toEventFullDto)
                         .collect(Collectors.toList());
+            }
         }
 
         return list;
@@ -281,7 +267,7 @@ public class EventService {
         }
 
         Category newCategory = updateEventAdminRequest.getCategory() == null ?
-                oldEvent.getCategory() : repositoryOfCategory.getById(updateEventAdminRequest.getCategory());
+                oldEvent.getCategory() : repositoryOfCategory.findById(updateEventAdminRequest.getCategory()).orElse(null);
 
         Event upEvent = oldEvent;
         if (updateEventAdminRequest.getStateAction() != null) {
@@ -345,7 +331,7 @@ public class EventService {
         }
         Location location = locationRepository.save(newEventDto.getLocation());
         newEventDto.setLocation(location);
-        Category category = repositoryOfCategory.getById(newEventDto.getCategory());
+        Category category = repositoryOfCategory.findById(newEventDto.getCategory()).orElse(null);
         User user = userService.getUserById(userId);
 
         Event event = MapperOfEvent.toEvent(newEventDto, user, category);
@@ -402,7 +388,7 @@ public class EventService {
             updateEventUserRequest.setLocation(location);
         }
         return updateEventUserRequest.getCategory() == null ?
-                oldEvent.getCategory() : repositoryOfCategory.getById(updateEventUserRequest.getCategory());
+                oldEvent.getCategory() : repositoryOfCategory.findById(updateEventUserRequest.getCategory()).orElse(null);
     }
 
 
@@ -438,7 +424,8 @@ public class EventService {
                 if (!participationRequest.getStatus().equals(Status.PENDING)) {
                     throw new ParticipantStatusException("Неправильный запрос статуса.");
                 }
-                EventStatusUpdateResponse listDto1 = getEventRequestStatusUpdateResult(status, listOld, participationRequest, listPending, event, list, listDto, listDtoReject, listRejected);
+                EventStatusUpdateResponse listDto1 = getEventRequestStatusUpdateResult(status, listOld,
+                        participationRequest, listPending, event, list, listDto, listDtoReject, listRejected);
                 if (listDto1 != null) return listDto1;
             }
             listDto = listPending.stream().map(MapperOfParticipant::toParticipationRequestDto).collect(Collectors.toList());
@@ -448,7 +435,8 @@ public class EventService {
                 if (!participationRequest.getStatus().equals(Status.PENDING)) {
                     throw new ParticipantStatusException("Неправильный запрос статуса.");
                 }
-                EventStatusUpdateResponse listDto1 = getEventRequestStatusUpdateResult(status, listOld, participationRequest, listPending, event, list, listDto, listDtoReject, listRejected);
+                EventStatusUpdateResponse listDto1 = getEventRequestStatusUpdateResult(status, listOld,
+                        participationRequest, listPending, event, list, listDto, listDtoReject, listRejected);
                 if (listDto1 != null) return listDto1;
             }
         }
@@ -491,6 +479,17 @@ public class EventService {
             return new EventStatusUpdateResponse(new ArrayList<>(), listDtoReject);
         }
         return null;
+    }
+
+    public Event findEventById(Long eventId) {
+        return returnEvent(eventRepository.findById(eventId));
+    }
+
+    private Event returnEvent(Optional<Event> eventRepository) {
+        if (eventRepository.isEmpty()) {
+            throw new NotFoundException("Событие не найдено.");
+        }
+        return eventRepository.get();
     }
 
 }

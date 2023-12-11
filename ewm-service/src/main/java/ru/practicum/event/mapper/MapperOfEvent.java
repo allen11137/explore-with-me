@@ -18,7 +18,7 @@ import static ru.practicum.event.Constant.DATA_TIME_PATTERN;
 
 @UtilityClass
 public class MapperOfEvent {
-    public static EventCompleteDto toEventFullDto(Event event) {
+    public EventCompleteDto toEventFullDto(Event event) {
         return new EventCompleteDto()
                 .setId(event.getId())
                 .setAnnotation(event.getAnnotation())
@@ -38,7 +38,7 @@ public class MapperOfEvent {
                 .setViews(event.getViews());
     }
 
-    public static EventBriefDto toEventShortDto(Event event) {
+    public EventBriefDto toEventShortDto(Event event) {
         return new EventBriefDto()
                 .setId(event.getId())
                 .setAnnotation(event.getAnnotation())
@@ -51,7 +51,7 @@ public class MapperOfEvent {
                 .setViews(event.getViews());
     }
 
-    public static Event toEvent(AddEventDto newEventDto, User initiator, Category category) {
+    public Event toEvent(AddEventDto newEventDto, User initiator, Category category) {
         return new Event()
                 .setAnnotation(newEventDto.getAnnotation())
                 .setCategory(category)
@@ -61,15 +61,15 @@ public class MapperOfEvent {
                 .setInitiator(initiator)
                 .setLocation(newEventDto.getLocation())
                 .setConfirmedRequests(0L)
-                .setPaid(newEventDto.getPaid() == null ? false : newEventDto.getPaid())
+                .setPaid(newEventDto.getPaid() != null && newEventDto.getPaid())
                 .setParticipantLimit(newEventDto.getParticipantLimit() == null ? 0 : newEventDto.getParticipantLimit())
-                .setRequestModeration(newEventDto.getRequestModeration() == null ? true : newEventDto.getRequestModeration())
+                .setRequestModeration(newEventDto.getRequestModeration() == null || newEventDto.getRequestModeration())
                 .setState(State.PENDING)
                 .setTitle(newEventDto.getTitle())
                 .setViews(0L);
     }
 
-    public static Event toEvent(AdminUpdateEventRequest updateEventAdminRequest, Event oldEvent, Category category) {
+    public Event toEvent(AdminUpdateEventRequest updateEventAdminRequest, Event oldEvent, Category category) {
         return new Event()
                 .setId(oldEvent.getId())
                 .setAnnotation(updateEventAdminRequest.getAnnotation() == null ? oldEvent.getAnnotation() : updateEventAdminRequest.getAnnotation())
@@ -88,7 +88,7 @@ public class MapperOfEvent {
                 .setViews(oldEvent.getViews());
     }
 
-    public static Event toEvent(UserUpdateEventRequest updateEventUserRequest, Event oldEvent, Category category) {
+    public Event toEvent(UserUpdateEventRequest updateEventUserRequest, Event oldEvent, Category category) {
         return new Event()
                 .setId(oldEvent.getId())
                 .setAnnotation(updateEventUserRequest.getAnnotation() == null ? oldEvent.getAnnotation() : updateEventUserRequest.getAnnotation())

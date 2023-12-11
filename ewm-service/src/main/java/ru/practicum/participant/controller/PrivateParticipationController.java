@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/users/{userId}/requests")
 public class PrivateParticipationController {
-
     private final ParticipantService participantService;
 
     @PostMapping

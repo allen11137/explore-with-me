@@ -1,7 +1,7 @@
 package ru.practicum.user.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +21,9 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final RepositoryOfUser userRepository;
-
-    @Autowired
-    public UserService(RepositoryOfUser userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Transactional(readOnly = true)
     public Collection<CompleteUserDto> getAdminUsers(Collection<Long> ids, Integer from, Integer size) {
@@ -43,7 +39,6 @@ public class UserService {
         }
     }
 
-    @Transactional
     public CompleteUserDto addAdminUser(AddUserRequest userRequest) {
         User user = MapperOfUser.toUser(userRequest);
         try {
@@ -54,15 +49,12 @@ public class UserService {
         }
     }
 
-    @Transactional
     public void deleteAdminUser(Long userId) {
         getUserById(userId);
-        userRepository.removeUserById(userId);
+        userRepository.deleteById(userId);
     }
 
     public User getUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> {
-            throw new NotFoundException("Пользователь не найден");
-        });
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
     }
 }

@@ -1,12 +1,11 @@
 package ru.practicum.participant.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import ru.practicum.participant.model.Participant;
 
 import java.util.List;
 
-@Repository
+
 public interface RepositoryOfParticipant extends JpaRepository<Participant, Long> {
     List<Participant> getParticipantRequestByIdIn(List<Long> requestId);
 

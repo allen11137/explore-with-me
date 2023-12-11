@@ -19,6 +19,7 @@ import ru.practicum.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,12 +38,13 @@ public class ParticipantService {
                 .map(Event::getId)
                 .collect(Collectors.toList());
         if (eventIds.isEmpty()) {
-            return participationRepository.getParticipantRequestsByRequester(userId)
-                    .stream().map(MapperOfParticipant::toParticipationRequestDto).collect(Collectors.toList());
-        } else {
-            return participationRepository.getParticipantRequestsByRequesterAndEventNotIn(userId, eventIds)
-                    .stream().map(MapperOfParticipant::toParticipationRequestDto).collect(Collectors.toList());
+            return participationRepository.getParticipantRequestsByRequester(userId).stream()
+                    .map(MapperOfParticipant::toParticipationRequestDto)
+                    .collect(Collectors.toList());
         }
+        return participationRepository.getParticipantRequestsByRequesterAndEventNotIn(userId, eventIds).stream()
+                .map(MapperOfParticipant::toParticipationRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -67,15 +69,15 @@ public class ParticipantService {
         if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     private void validatePrivateAddParticipationRequest(Event event, List<Participant> participationRequestList, Long userId) {
         if (participationRequestList.size() != 0) {
             throw new DoubleParticipationException("Ошибка. Повторная заявка.");
         }
+
         if (event == null) {
             throw new IllegalArgumentException("Событие не найдено.");
         } else if (event.getInitiator().getId().equals(userId)) {
@@ -89,9 +91,7 @@ public class ParticipantService {
         }
     }
 
-    @Transactional
     public ParticipantRequestDto updatePrivateRejectedParticipationRequest(Long userId, Long requestId) {
-
         Participant participationRequest = participationRepository.getParticipantRequestByIdAndRequester(requestId, userId);
         if (participationRequest == null) {
             throw new NotFoundException("Заявка не найдена.");
@@ -99,14 +99,14 @@ public class ParticipantService {
         if (participationRequest.getStatus().equals(Status.PENDING)) {
             participationRequest.setStatus(Status.CANCELED);
         } else if (participationRequest.getStatus().equals(Status.CONFIRMED)) {
-            Event event = eventRepository.findById(participationRequest.getEvent()).orElse(null);
-            event.setConfirmedRequests(event.getConfirmedRequests() - 1);
-            eventRepository.save(event);
-            participationRequest.setStatus(Status.CANCELED);
+            Optional<Event> event = eventRepository.findById(participationRequest.getEvent());
+            event.ifPresent(e -> {
+                e.setConfirmedRequests(e.getConfirmedRequests() - 1);
+                eventRepository.save(e);
+                participationRequest.setStatus(Status.CANCELED);
+            });
         }
-
-        return MapperOfParticipant
-                .toParticipationRequestDto(participationRepository.save(participationRequest));
+        return MapperOfParticipant.toParticipationRequestDto(participationRepository.save(participationRequest));
     }
 
 }
